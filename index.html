@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thrift Boutique — Home</title>
+    <meta name="description" content="A pretty, playful boutique storefront built with HTML, CSS, and JavaScript." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="nav-container">
+        <a class="brand" href="index.html" aria-label="Thrift Boutique home">Thrift Boutique</a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="index.html" data-page="home">Home</a>
+          <a href="products.html" data-page="shop">Shop</a>
+          <a href="cart.html" class="cart-link" data-page="cart">
+            Cart <span class="cart-count" aria-label="Cart items">0</span>
+          </a>
+          <button class="theme-toggle" aria-label="Toggle theme">🌙</button>
+          <button class="menu-toggle" aria-label="Open navigation menu">☰</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <h1>Find your next favorite piece</h1>
+            <p>
+              A curated boutique experience for outfits, bags, and shoes. Browse hand-picked
+              selections with a soft, modern palette designed for dreamy shopping.
+            </p>
+            <a href="products.html" class="btn btn-primary">Start shopping</a>
+          </div>
+          <div class="hero-visual" aria-hidden="true">
+            <img
+              src="images/hero_2.jpg"
+              alt="A boutique display with pastel shoes and handbags."
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="categories-title">
+        <div class="container">
+          <h2 class="section-title" id="categories-title">Browse by category</h2>
+          <p class="section-subtitle">
+            Explore curated collections of clothes, handbags, and shoes—each chosen to feel modern,
+            cosy, and wearable.
+          </p>
+          <div id="categoryGrid" class="categories"></div>
+        </div>
+      </section>
+
+      <section class="section section--tight" aria-labelledby="featured-title">
+        <div class="container">
+          <h2 class="section-title" id="featured-title">Featured Picks</h2>
+          <p class="section-subtitle">
+            A small edit of staff favorites—perfect for adding extra charm to your wardrobe.
+          </p>
+          <div id="featuredGrid" class="products-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-col">
+          <h4>Thrift Boutique</h4>
+          <p>
+            A playful, lightweight storefront demo built with HTML, CSS, and JavaScript. Your cart
+            lives in local storage, so your favorites stay saved between visits.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <a href="index.html">Home</a>
+          <a href="products.html">Shop</a>
+          <a href="cart.html">Cart</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; <span id="dateYear"></span> Thrift Boutique. Made with ♡.</p>
+      </div>
+    </footer>
+
+    <script src="products.js" defer></script>
+    <script src="scripts.js" defer></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        initSite("home");
+        document.getElementById("dateYear").textContent = new Date().getFullYear();
+
+        const categoryGrid = document.getElementById("categoryGrid");
+        const categories = getCategories().filter((c) => c !== "All");
+
+        const categoryImages = {
+          Clothes:
+            "images/clothes.jpg",
+          Handbags:
+            "images/handbags.jpg",
+          Shoes:
+            "images/shoes.jpg",
+          Accessories:
+            "images/accessories.jpg",
+        };
+
+        categoryGrid.innerHTML = categories
+          .map(
+            (category) => `
+            <a href="products.html?category=${encodeURIComponent(category)}" class="category-card">
+              <div class="category-card__image">
+                <img
+                  src="${categoryImages[category] || categoryImages.Clothes}"
+                  alt="${category} category"
+                  loading="lazy"
+                />
+              </div>
+              <div class="category-card__body">
+                <h3 class="category-card__title">${category}</h3>
+                <p class="category-card__subtitle">Shop the latest &amp; brightest in ${category.toLowerCase()}.</p>
+              </div>
+            </a>
+          `
+          )
+          .join("");
+
+        const featureGrid = document.getElementById("featuredGrid");
+        const featured = PRODUCTS.slice(0, 6);
+        featureGrid.innerHTML = featured
+          .map(
+            (product) => `
+            <article class="product-card">
+              <a href="product.html?id=${product.id}" class="product-card__image" aria-label="View ${product.title}">
+                <img src="${product.images[0]}" alt="${product.title}" loading="lazy" />
+                <span class="product-card__badge">${product.category}</span>
+              </a>
+              <div class="product-card__body">
+                <h3 class="product-card__title">${product.title}</h3>
+                <p class="product-card__meta">${formatPrice(product.price)}</p>
+                <div class="product-card__actions">
+                  <a class="btn btn-secondary" href="product.html?id=${product.id}">View</a>
+                  <button class="btn btn-primary" type="button" data-add="${product.id}">Add to cart</button>
+                </div>
+              </div>
+            </article>
+          `
+          )
+          .join("");
+
+        featureGrid.addEventListener("click", (event) => {
+          const button = event.target.closest("button[data-add]");
+          if (!button) return;
+          const id = button.getAttribute("data-add");
+          addToCart(id);
+          showToast("Added to cart", { type: "success" });
+        });
+      });
+    </script>
+  </body>
+</html>
