@@ -3,8 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thrift Boutique — Cart</title>
-    <meta name="description" content="Your shopping cart. Add, remove, and review items before checkout." />
+    <title>Thrift Boutique &#8212; Cart</title>
+    <meta
+      name="description"
+      content="Your shopping cart. Add, remove, and review items before checkout."
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -17,8 +20,8 @@
           <a href="cart.html" class="cart-link" data-page="cart">
             Cart <span class="cart-count" aria-label="Cart items">0</span>
           </a>
-          <button class="theme-toggle" aria-label="Toggle theme">🌙</button>
-          <button class="menu-toggle" aria-label="Open navigation menu">☰</button>
+          <button class="theme-toggle" aria-label="Toggle theme">&#127769;</button>
+          <button class="menu-toggle" aria-label="Open navigation menu">&#9776;</button>
         </nav>
       </div>
     </header>
@@ -26,11 +29,71 @@
     <main class="section">
       <div class="container">
         <h1 class="section-title">Your cart</h1>
-        <p class="section-subtitle">Review your selections before checking out. Cart items persist even after refreshing the page.</p>
+        <p class="section-subtitle">
+          Review your selections before checking out. Cart items persist even after refreshing the
+          page.
+        </p>
 
         <div id="cartSection"></div>
       </div>
     </main>
+
+    <div id="authModal" class="modal" hidden aria-hidden="true">
+      <div class="modal__backdrop" data-close-modal></div>
+      <div
+        class="modal__dialog auth-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="authTitle"
+      >
+        <button
+          class="modal__close"
+          type="button"
+          aria-label="Close sign in dialog"
+          data-close-modal
+        >
+          &times;
+        </button>
+        <p class="auth-dialog__eyebrow">Secure checkout</p>
+        <h2 id="authTitle">Sign in to continue</h2>
+        <p id="authHelper" class="auth-dialog__helper">
+          Log in with your saved account details to continue to checkout.
+        </p>
+
+        <div class="auth-switcher" role="tablist" aria-label="Authentication options">
+          <button class="auth-switcher__btn active" type="button" data-auth-mode="signin">
+            Log in
+          </button>
+          <button class="auth-switcher__btn" type="button" data-auth-mode="signup">
+            Create account
+          </button>
+        </div>
+
+        <form id="authForm" class="auth-form">
+          <label id="authNameField" hidden>
+            <span>Full name</span>
+            <input id="authName" type="text" autocomplete="name" />
+          </label>
+          <label>
+            <span>Email address</span>
+            <input id="authEmail" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            <span>Password</span>
+            <input
+              id="authPassword"
+              type="password"
+              autocomplete="current-password"
+              minlength="4"
+              required
+            />
+          </label>
+          <button class="btn btn-primary auth-form__submit" id="authSubmitBtn" type="submit">
+            Log in
+          </button>
+        </form>
+      </div>
+    </div>
 
     <footer class="site-footer">
       <div class="footer-container">
@@ -49,7 +112,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; <span id="dateYear"></span> Thrift Boutique. Made with ♡.</p>
+        <p>&copy; <span id="dateYear"></span> Thrift Boutique. Made with &#9825;.</p>
       </div>
     </footer>
 
@@ -61,23 +124,62 @@
         document.getElementById("dateYear").textContent = new Date().getFullYear();
 
         const cartSection = document.getElementById("cartSection");
+        const authModal = document.getElementById("authModal");
+        const authForm = document.getElementById("authForm");
+        const authTitle = document.getElementById("authTitle");
+        const authHelper = document.getElementById("authHelper");
+        const authSubmitBtn = document.getElementById("authSubmitBtn");
+        const authNameField = document.getElementById("authNameField");
+        const authName = document.getElementById("authName");
+        const authEmail = document.getElementById("authEmail");
+        const authPassword = document.getElementById("authPassword");
+        const authModeButtons = document.querySelectorAll("[data-auth-mode]");
+        let authMode = "signin";
+        let pendingCheckout = false;
+        let lastOrder = null;
 
-        function renderCart() {
-          const cart = getCart();
-          const itemIds = Object.keys(cart);
+        function setAuthMode(mode) {
+          const isSignup = mode === "signup";
+          authMode = mode;
+          authTitle.textContent = isSignup ? "Create an account to check out" : "Sign in to continue";
+          authHelper.textContent = isSignup
+            ? "Create a quick account for this demo, then we will continue with your order."
+            : "Log in with your saved account details to continue to checkout.";
+          authSubmitBtn.textContent = isSignup ? "Create account" : "Log in";
+          authNameField.hidden = !isSignup;
+          authName.required = isSignup;
+          authPassword.setAttribute("autocomplete", isSignup ? "new-password" : "current-password");
 
-          if (!itemIds.length) {
-            cartSection.innerHTML = `
-              <div class="cart-empty">
-                <h3>Your cart is empty</h3>
-                <p>Browse the boutique and add a few treasures to get started.</p>
-                <a href="products.html" class="btn btn-primary">Start shopping</a>
-              </div>
-            `;
-            return;
-          }
+          authModeButtons.forEach((button) => {
+            button.classList.toggle("active", button.dataset.authMode === mode);
+          });
+        }
 
-          const items = itemIds
+        function openAuthModal(mode = "signin") {
+          setAuthMode(mode);
+          authModal.hidden = false;
+          authModal.setAttribute("aria-hidden", "false");
+          document.body.classList.add("modal-open");
+          window.setTimeout(() => {
+            if (mode === "signup") {
+              authName.focus();
+              return;
+            }
+
+            authEmail.focus();
+          }, 20);
+        }
+
+        function closeAuthModal() {
+          authModal.hidden = true;
+          authModal.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("modal-open");
+          authForm.reset();
+          setAuthMode("signin");
+        }
+
+        function getCartItems(cart) {
+          return Object.keys(cart)
             .map((id) => {
               const product = getProductById(id);
               if (!product) return null;
@@ -88,7 +190,62 @@
               };
             })
             .filter(Boolean);
+        }
 
+        function completeCheckout(items, total) {
+          const currentUser = getCurrentUser();
+
+          if (!currentUser) {
+            pendingCheckout = true;
+            openAuthModal("signin");
+            return;
+          }
+
+          lastOrder = {
+            name: currentUser.name,
+            email: currentUser.email,
+            total,
+            itemCount: items.reduce((sum, item) => sum + item.quantity, 0),
+          };
+          pendingCheckout = false;
+          clearCart();
+          renderCart();
+          scrollToTopSmooth();
+          showToast("Order placed successfully", { type: "success", duration: 3200 });
+        }
+
+        function renderCart() {
+          const cart = getCart();
+          const itemIds = Object.keys(cart);
+          const currentUser = getCurrentUser();
+
+          if (!itemIds.length) {
+            if (lastOrder) {
+              cartSection.innerHTML = `
+                <div class="cart-empty checkout-success">
+                  <h3>Order confirmed</h3>
+                  <p>
+                    Thanks, ${lastOrder.name}. Your order for ${lastOrder.itemCount} item(s)
+                    totaling ${formatPrice(lastOrder.total)} is confirmed.
+                  </p>
+                  <p>A confirmation has been prepared for ${lastOrder.email}.</p>
+                  <a href="products.html" class="btn btn-primary">Keep shopping</a>
+                </div>
+              `;
+              return;
+            }
+
+            cartSection.innerHTML = `
+              <div class="cart-empty">
+                <h3>Your cart is empty</h3>
+                <p>Browse the boutique and add a few treasures to get started.</p>
+                <a href="products.html" class="btn btn-primary">Start shopping</a>
+              </div>
+            `;
+            return;
+          }
+
+          const items = getCartItems(cart);
           const total = items.reduce((sum, item) => sum + item.subTotal, 0);
 
           cartSection.innerHTML = `
@@ -108,8 +265,8 @@
                     (item) => `
                     <tr data-id="${item.id}">
                       <td>
-                        <div class="flex" style="gap: 0.75rem; align-items:center;">
-                          <img src="${item.images[0]}" alt="${item.title}" />
+                        <div class="flex" style="gap: 0.75rem; align-items: center;">
+                          <img src="${item.images[0]}" alt="${item.title}" onerror="this.onerror=null;this.src='https://via.placeholder.com/160x160?text=No+Image';" />
                           <div>
                             <strong>${item.title}</strong>
                             <div style="font-size: 0.9rem; color: var(--muted);">${item.category}</div>
@@ -119,7 +276,7 @@
                       <td>${formatPrice(item.price)}</td>
                       <td>
                         <div class="quantity" role="group" aria-label="Change item quantity">
-                          <button class="qty-down" type="button">−</button>
+                          <button class="qty-down" type="button">-</button>
                           <input class="qty-input" type="number" min="1" value="${item.quantity}" />
                           <button class="qty-up" type="button">+</button>
                         </div>
@@ -148,7 +305,24 @@
                 <span>Total</span>
                 <span>${formatPrice(total)}</span>
               </p>
-              <a class="btn btn-primary" href="#" id="checkoutBtn">Proceed to checkout</a>
+              <div class="checkout-auth ${currentUser ? "checkout-auth--signed-in" : ""}">
+                ${
+                  currentUser
+                    ? `
+                      <strong>Signed in as ${currentUser.name}</strong>
+                      <p>${currentUser.email}</p>
+                      <button class="btn btn-secondary btn-sm" id="signOutBtn" type="button">Sign out</button>
+                    `
+                    : `
+                      <strong>Checkout requires an account</strong>
+                      <p>Sign in or create an account before placing your order.</p>
+                      <button class="btn btn-secondary btn-sm" id="openAuthBtn" type="button">Sign in / Create account</button>
+                    `
+                }
+              </div>
+              <button class="btn btn-primary" type="button" id="checkoutBtn">
+                ${currentUser ? "Place order" : "Proceed to checkout"}
+              </button>
             </div>
           `;
 
@@ -157,9 +331,9 @@
             renderCart();
           };
 
-          cartSection.querySelectorAll(".qty-down").forEach((btn) => {
-            btn.addEventListener("click", () => {
-              const row = btn.closest("tr");
+          cartSection.querySelectorAll(".qty-down").forEach((button) => {
+            button.addEventListener("click", () => {
+              const row = button.closest("tr");
               const id = row.dataset.id;
               const input = row.querySelector(".qty-input");
               const current = Number(input.value);
@@ -169,9 +343,9 @@
             });
           });
 
-          cartSection.querySelectorAll(".qty-up").forEach((btn) => {
-            btn.addEventListener("click", () => {
-              const row = btn.closest("tr");
+          cartSection.querySelectorAll(".qty-up").forEach((button) => {
+            button.addEventListener("click", () => {
+              const row = button.closest("tr");
               const id = row.dataset.id;
               const input = row.querySelector(".qty-input");
               const current = Number(input.value);
@@ -188,9 +362,9 @@
             });
           });
 
-          cartSection.querySelectorAll(".remove-item").forEach((btn) => {
-            btn.addEventListener("click", () => {
-              const row = btn.closest("tr");
+          cartSection.querySelectorAll(".remove-item").forEach((button) => {
+            button.addEventListener("click", () => {
+              const row = button.closest("tr");
               const id = row.dataset.id;
               removeFromCart(id);
               showToast("Removed from cart", { type: "error" });
@@ -198,19 +372,94 @@
             });
           });
 
-          const clearCartBtn = document.getElementById("clearCartBtn");
-          clearCartBtn.addEventListener("click", () => {
+          document.getElementById("clearCartBtn").addEventListener("click", () => {
             clearCart();
             showToast("Cart cleared", { type: "error" });
             renderCart();
           });
 
-          const checkoutBtn = document.getElementById("checkoutBtn");
-          checkoutBtn.addEventListener("click", (event) => {
-            event.preventDefault();
-            showToast("Checkout is not yet implemented — this is a demo.", { type: "info" });
+          document.getElementById("checkoutBtn").addEventListener("click", () => {
+            completeCheckout(items, total);
           });
+
+          const openAuthBtn = document.getElementById("openAuthBtn");
+          if (openAuthBtn) {
+            openAuthBtn.addEventListener("click", () => {
+              pendingCheckout = false;
+              openAuthModal("signin");
+            });
+          }
+
+          const signOutBtn = document.getElementById("signOutBtn");
+          if (signOutBtn) {
+            signOutBtn.addEventListener("click", () => {
+              signOutUser();
+              showToast("You have been signed out", { type: "info" });
+              renderCart();
+            });
+          }
         }
+
+        authModeButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            setAuthMode(button.dataset.authMode);
+          });
+        });
+
+        authForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+
+          const email = authEmail.value.trim();
+          const password = authPassword.value;
+          const name = authName.value.trim();
+
+          if (!email || !password) {
+            showToast("Please fill in your email and password.", { type: "error" });
+            return;
+          }
+
+          if (authMode === "signup" && !name) {
+            showToast("Please add your name to create an account.", { type: "error" });
+            return;
+          }
+
+          const result =
+            authMode === "signup"
+              ? signUpUser({ name, email, password })
+              : signInUser({ email, password });
+
+          if (!result.ok) {
+            showToast(result.message, { type: "error", duration: 2800 });
+            return;
+          }
+
+          closeAuthModal();
+          renderCart();
+          showToast(
+            authMode === "signup" ? "Account created successfully" : "Signed in successfully",
+            { type: "success" }
+          );
+
+          if (pendingCheckout) {
+            const refreshedItems = getCartItems(getCart());
+            const refreshedTotal = refreshedItems.reduce((sum, item) => sum + item.subTotal, 0);
+            completeCheckout(refreshedItems, refreshedTotal);
+          }
+        });
+
+        authModal.addEventListener("click", (event) => {
+          if (event.target.hasAttribute("data-close-modal")) {
+            pendingCheckout = false;
+            closeAuthModal();
+          }
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !authModal.hidden) {
+            pendingCheckout = false;
+            closeAuthModal();
+          }
+        });
 
         showSkeletonGrid(cartSection, 4);
         setTimeout(renderCart, 250);

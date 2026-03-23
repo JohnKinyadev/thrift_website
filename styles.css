@@ -54,6 +54,10 @@ body {
   min-height: 100vh;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -726,6 +730,151 @@ img {
   border-radius: var(--radius);
   background: var(--surface);
   border: 1px dashed var(--border);
+}
+
+.checkout-success {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.checkout-auth {
+  margin: 1rem 0 1.15rem;
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.checkout-auth strong {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.checkout-auth p {
+  display: block;
+  margin: 0 0 0.85rem;
+  color: var(--muted);
+}
+
+.checkout-auth--signed-in {
+  background: rgba(20, 215, 118, 0.08);
+}
+
+.cart-summary > .btn {
+  width: 100%;
+}
+
+/* ---------- Modal / Auth ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 12, 20, 0.55);
+  backdrop-filter: blur(8px);
+}
+
+.modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 460px);
+  border-radius: 26px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.22);
+  padding: 1.5rem;
+}
+
+.modal__close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--text);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.auth-dialog__eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.auth-dialog h2 {
+  margin: 0;
+  font-size: 1.7rem;
+}
+
+.auth-dialog__helper {
+  margin: 0.75rem 0 1.2rem;
+  color: var(--muted);
+}
+
+.auth-switcher {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.auth-switcher__btn {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.75rem 0.9rem;
+}
+
+.auth-switcher__btn.active {
+  background: linear-gradient(120deg, var(--primary), var(--primary-2));
+  color: #fff;
+  border-color: transparent;
+}
+
+.auth-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.auth-form__submit {
+  width: 100%;
+  margin-top: 0.4rem;
 }
 
 /* ---------- Toast ---------- */

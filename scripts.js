@@ -6,6 +6,8 @@
 
 const STORAGE_CART_KEY = "thrift-boutique-cart";
 const STORAGE_THEME_KEY = "thrift-boutique-theme";
+const STORAGE_USERS_KEY = "thrift-boutique-users";
+const STORAGE_SESSION_KEY = "thrift-boutique-session";
 
 function getCart() {
   try {
@@ -46,6 +48,99 @@ function removeFromCart(productId) {
 
 function clearCart() {
   setCart({});
+}
+
+function getStoredUsers() {
+  try {
+    const raw = localStorage.getItem(STORAGE_USERS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (error) {
+    console.warn("Could not parse user data", error);
+    return [];
+  }
+}
+
+function setStoredUsers(users) {
+  localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users));
+}
+
+function getCurrentUser() {
+  try {
+    const raw = localStorage.getItem(STORAGE_SESSION_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    console.warn("Could not parse session data", error);
+    return null;
+  }
+}
+
+function setCurrentUser(user) {
+  if (!user) {
+    localStorage.removeItem(STORAGE_SESSION_KEY);
+    return;
+  }
+
+  localStorage.setItem(
+    STORAGE_SESSION_KEY,
+    JSON.stringify({
+      name: user.name,
+      email: user.email,
+    })
+  );
+}
+
+function signUpUser({ name, email, password }) {
+  const normalizedEmail = email.trim().toLowerCase();
+  const users = getStoredUsers();
+  const existingUser = users.find((user) => user.email === normalizedEmail);
+
+  if (existingUser) {
+    return {
+      ok: false,
+      message: "An account with that email already exists.",
+    };
+  }
+
+  const user = {
+    name: name.trim(),
+    email: normalizedEmail,
+    password,
+  };
+
+  users.push(user);
+  setStoredUsers(users);
+  setCurrentUser(user);
+
+  return {
+    ok: true,
+    user: getCurrentUser(),
+  };
+}
+
+function signInUser({ email, password }) {
+  const normalizedEmail = email.trim().toLowerCase();
+  const users = getStoredUsers();
+  const user = users.find(
+    (entry) => entry.email === normalizedEmail && entry.password === password
+  );
+
+  if (!user) {
+    return {
+      ok: false,
+      message: "We could not find a matching account for those details.",
+    };
+  }
+
+  setCurrentUser(user);
+
+  return {
+    ok: true,
+    user: getCurrentUser(),
+  };
+}
+
+function signOutUser() {
+  setCurrentUser(null);
 }
 
 function getCartCount() {
