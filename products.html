@@ -102,6 +102,9 @@
         const params = new URLSearchParams(window.location.search);
         const initialCategory = params.get("category") || "All";
         const initialQuery = params.get("q") || "";
+        const initialSort = params.get("sort") || "";
+        const initialMin = params.get("min") || "";
+        const initialMax = params.get("max") || "";
 
         const searchInput = document.getElementById("searchInput");
         const categoryFilter = document.getElementById("categoryFilter");
@@ -112,18 +115,24 @@
         const productsGrid = document.getElementById("productsGrid");
         const emptyState = document.getElementById("emptyState");
 
+        function parseOptionalNumber(value) {
+          if (value === "") return undefined;
+          const parsed = Number(value);
+          return Number.isNaN(parsed) ? undefined : parsed;
+        }
+
         function renderProducts() {
           const query = searchInput.value.trim();
           const category = categoryFilter.value;
           const sort = sortSelect.value;
-          const min = Number(minPrice.value);
-          const max = Number(maxPrice.value);
+          const min = parseOptionalNumber(minPrice.value);
+          const max = parseOptionalNumber(maxPrice.value);
 
           const filtered = getProductsByFilter({
             query,
             category,
-            minPrice: isNaN(min) ? undefined : min,
-            maxPrice: isNaN(max) ? undefined : max,
+            minPrice: min,
+            maxPrice: max,
             sort,
           });
 
@@ -139,7 +148,7 @@
               (product) => `
             <article class="product-card">
               <a href="product.html?id=${product.id}" class="product-card__image" aria-label="View ${product.title}">
-                <img src="${product.images[0]}" alt="${product.title}" loading="lazy" />
+                <img src="${product.images[0]}" alt="${product.title}" loading="lazy" onerror="this.onerror=null;this.src='https://via.placeholder.com/900x600?text=Image+unavailable';" />
                 <span class="product-card__badge">${product.category}</span>
               </a>
               <div class="product-card__body">
@@ -164,6 +173,9 @@
         function updateUIFromParams() {
           searchInput.value = initialQuery;
           categoryFilter.value = initialCategory;
+          sortSelect.value = initialSort;
+          minPrice.value = initialMin;
+          maxPrice.value = initialMax;
         }
 
         function populateCategories() {
@@ -171,7 +183,9 @@
           categoryFilter.innerHTML = categories
             .map((c) => `<option value="${c}">${c}</option>`)
             .join("");
-          categoryFilter.value = initialCategory;
+          categoryFilter.value = categories.includes(initialCategory)
+            ? initialCategory
+            : "All";
         }
 
         function updateQueryParams() {

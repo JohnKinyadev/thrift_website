@@ -8,15 +8,13 @@
 const PRODUCTS = [
   {
     id: "p001",
-    title: "Vintage Rose Midi Dress",
+    title: "Summer dress",
     category: "Clothes",
     price: 49.99,
     rating: 4.7,
     sold: 21,
     images: [
-      "https://images.unsplash.com/photo-1520975691833-1a2ee584e9a4?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1520975973301-53d61f431c1f?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1514995669114-54c6b620d3c8?auto=format&fit=crop&w=900&q=80"
+      "images/summer-dress.jpg",
     ],
     description:
       "A flowing midi dress with delicate floral details. Comfortable, breathable, and perfect for brunch or a garden party.",
@@ -24,31 +22,27 @@ const PRODUCTS = [
   },
   {
     id: "p002",
-    title: "Blush Leather Crossbody",
+    title: "pink-slingbag",
     category: "Handbags",
     price: 64.0,
     rating: 4.8,
     sold: 37,
     images: [
-      "https://images.unsplash.com/photo-1520975691833-1a2ee584e9a4?auto=format&fit=crop&w=900&q=80", // reused for demo
-      "https://images.unsplash.com/photo-1522184216312-6a2a0b8d5a0a?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1602524203288-63e06f34a6d4?auto=format&fit=crop&w=900&q=80"
+      "images/pink-slingbag.jpg",
     ],
     description:
-      "Soft blush leather meets streamlined design. This crossbody is the perfect companion for errands or date night.",
+      "beautiful handbag for dates and going out.",
     tags: ["everyday", "leather", "compact"],
   },
   {
     id: "p003",
-    title: "Retro Platform Sneakers",
+    title: "Retro Puma Sneakers",
     category: "Shoes",
     price: 78.5,
     rating: 4.6,
     sold: 54,
     images: [
-      "https://images.unsplash.com/photo-1520976228732-2c23b46d48f4?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1616590153687-7c8a94d5f2a8?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1520975772740-c0ee2a72b9b4?auto=format&fit=crop&w=900&q=80"
+      "images/puma-sneakers.jpg",
     ],
     description:
       "Vintage-inspired platform sneakers with cushioned soles. Add a touch of street chic to any outfit.",
@@ -56,14 +50,13 @@ const PRODUCTS = [
   },
   {
     id: "p004",
-    title: "Silk Scarf Set",
+    title: "diamond necklace",
     category: "Accessories",
     price: 24.99,
     rating: 4.9,
     sold: 89,
     images: [
-      "https://images.unsplash.com/photo-1520975655593-31234405eb70?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1520975701823-82cc2f2c9f6d?auto=format&fit=crop&w=900&q=80"
+      "images/diamond-necklace.jpg",
     ],
     description:
       "A set of two silk scarves that can be worn in your hair, around your neck, or as a bag accessory. Subtle vintage vibe.",
@@ -71,14 +64,13 @@ const PRODUCTS = [
   },
   {
     id: "p005",
-    title: "Pastel Knit Sweater",
+    title: "sweatshirt",
     category: "Clothes",
     price: 39.99,
     rating: 4.5,
     sold: 43,
     images: [
-      "https://images.unsplash.com/photo-1520975805737-8f4e0a1f4e1b?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1520975814298-2a31eafc4f78?auto=format&fit=crop&w=900&q=80"
+      "images/white-sweatshirt.jpg",
     ],
     description:
       "Cozy knit with pretty pastel stripes. Lightweight yet warm—perfect for cool mornings and coffee runs.",
@@ -92,8 +84,7 @@ const PRODUCTS = [
     rating: 4.4,
     sold: 31,
     images: [
-      "https://images.unsplash.com/photo-1520975719796-1c8f4b2ccb52?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1520975725645-93c2bf9b925a?auto=format&fit=crop&w=900&q=80"
+      "images/cream-tote-bag.jpg",
     ],
     description:
       "Spacious tote with soft cream canvas and faux leather handles. Durable, stylish, and perfect for everyday carry.",
@@ -101,44 +92,41 @@ const PRODUCTS = [
   },
   {
     id: "p007",
-    title: "Blush Suede Slides",
+    title: "New Balance Sneakers",
     category: "Shoes",
     price: 34.75,
     rating: 4.3,
     sold: 26,
     images: [
-      "https://images.unsplash.com/photo-1520979634580-f1f3f6b5b9b2?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1520979652909-4fb469e7b9eb?auto=format&fit=crop&w=900&q=80"
+      "images/new-balance-sneakers.jpg",
     ],
     description:
-      "Effortless slides with a suede top and cushioned sole. Great for easy summer days.",
+      "Effortless sneakers with a suede top and cushioned sole. Great for easy summer days.",
     tags: ["comfort", "summer", "easy"],
   },
   {
     id: "p008",
-    title: "Pearl Statement Earrings",
+    title: "Gold Statement Earrings",
     category: "Accessories",
     price: 29.5,
     rating: 4.8,
     sold: 73,
     images: [
-      "https://images.unsplash.com/photo-1520975866916-4eae9422cbab?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1520979812742-4ba2af3f8c31?auto=format&fit=crop&w=900&q=80"
+      "images/gold-earring.jpg",
     ],
     description:
-      "Delicate pearl drop earrings that elevate any outfit—from day to night.",
+      "Delicate gold drop earrings that elevate any outfit—from day to night.",
     tags: ["pearls", "jewelry", "elegant"],
   },
   {
     id: "p009",
-    title: "Soft Linen Blazer",
+    title: "White Hoodie",
     category: "Clothes",
     price: 89.99,
     rating: 4.7,
     sold: 19,
     images: [
-      "https://images.unsplash.com/photo-1520975902301-6aa2dbe8a4b6?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1520975943515-7d73c4f43f37?auto=format&fit=crop&w=900&q=80"
+      "images/white-hoodie.jpg",
     ],
     description:
       "Lightweight linen blazer that layers beautifully. A soft neutral that pairs with all your wardrobe.",
@@ -146,14 +134,13 @@ const PRODUCTS = [
   },
   {
     id: "p010",
-    title: "Straw Woven Clutch",
+    title: "slingbag",
     category: "Handbags",
     price: 32.0,
     rating: 4.4,
     sold: 58,
     images: [
-      "https://images.unsplash.com/photo-1520975898630-78c8b9026c2e?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1520975974778-5410262a03a1?auto=format&fit=crop&w=900&q=80"
+      "images/sling-bag.jpg",
     ],
     description:
       "A summery clutch with natural straw weave and a snap closure. Light, breezy, and stylish.",
@@ -161,14 +148,13 @@ const PRODUCTS = [
   },
   {
     id: "p011",
-    title: "Velvet Platform Heels",
+    title: "Glam Velvet Heels",
     category: "Shoes",
     price: 92.0,
     rating: 4.6,
     sold: 14,
     images: [
-      "https://images.unsplash.com/photo-1520975932271-8c11182a4f6c?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1520975978084-78973f5b6dc3?auto=format&fit=crop&w=900&q=80"
+      "images/official-look-heels.jpg",
     ],
     description:
       "Glam velvet heels with a bold platform for a confident step. Perfect for evenings and events.",
@@ -195,11 +181,18 @@ function getProductById(id) {
   return PRODUCTS.find((product) => product.id === id);
 }
 
+function normalizeCategory(category) {
+  return typeof category === "string" ? category.trim().toLowerCase() : "";
+}
+
 function getProductsByFilter({ query, category, minPrice, maxPrice, sort }) {
   let results = PRODUCTS.slice();
 
   if (category && category !== "All") {
-    results = results.filter((p) => p.category === category);
+    const normalizedCategory = normalizeCategory(category);
+    results = results.filter(
+      (p) => normalizeCategory(p.category) === normalizedCategory
+    );
   }
   if (query) {
     const q = query.trim().toLowerCase();
