@@ -116,6 +116,7 @@
                   src="${categoryImages[category] || categoryImages.Clothes}"
                   alt="${category} category"
                   loading="lazy"
+                  onerror="this.onerror=null;this.src='https://via.placeholder.com/900x600?text=Image+unavailable';"
                 />
               </div>
               <div class="category-card__body">
@@ -134,7 +135,7 @@
             (product) => `
             <article class="product-card">
               <a href="product.html?id=${product.id}" class="product-card__image" aria-label="View ${product.title}">
-                <img src="${product.images[0]}" alt="${product.title}" loading="lazy" />
+                <img src="${product.images[0]}" alt="${product.title}" loading="lazy" onerror="this.onerror=null;this.src='https://via.placeholder.com/900x600?text=Image+unavailable';" />
                 <span class="product-card__badge">${product.category}</span>
               </a>
               <div class="product-card__body">

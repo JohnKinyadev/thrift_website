@@ -90,7 +90,7 @@
             ${product.images
               .slice(0, 4)
               .map(
-                (src) => `<img src="${src}" alt="${product.title}" loading="lazy" />`
+                (src) => `<img src="${src}" alt="${product.title}" loading="lazy" onerror="this.onerror=null;this.src='https://via.placeholder.com/900x600?text=Image+unavailable';" />`
               )
               .join("")}
           </div>
