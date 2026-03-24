@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thrift Boutique &#8212; Profile</title>
+    <meta
+      name="description"
+      content="View your account details, order totals, and quick shortcuts for the thrift boutique."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="nav-container">
+        <a class="brand" href="index.html" aria-label="Thrift Boutique home">Thrift Boutique</a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="index.html" data-page="home">Home</a>
+          <a href="products.html" data-page="shop">Shop</a>
+          <a href="orders.html" data-page="orders">Orders</a>
+          <a href="cart.html" class="cart-link" data-page="cart">
+            Cart <span class="cart-count" aria-label="Cart items">0</span>
+          </a>
+          <button class="theme-toggle" aria-label="Toggle theme">&#127769;</button>
+          <button class="menu-toggle" aria-label="Open navigation menu">&#9776;</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="section">
+      <div class="container">
+        <h1 class="section-title">Your profile</h1>
+        <p class="section-subtitle">
+          Keep track of your saved details, current cart, and confirmed orders in one place.
+        </p>
+
+        <div id="profileSection" class="profile-shell"></div>
+      </div>
+    </main>
+
+    <div id="authModal" class="modal" hidden aria-hidden="true">
+      <div class="modal__backdrop" data-close-modal></div>
+      <div
+        class="modal__dialog auth-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="authTitle"
+      >
+        <button
+          class="modal__close"
+          type="button"
+          aria-label="Close sign in dialog"
+          data-close-modal
+        >
+          &times;
+        </button>
+        <p class="auth-dialog__eyebrow">Your account</p>
+        <h2 id="authTitle">Sign in to open your profile</h2>
+        <p id="authHelper" class="auth-dialog__helper">
+          Use your saved account details to view your profile and order activity.
+        </p>
+
+        <div class="auth-switcher" role="tablist" aria-label="Authentication options">
+          <button class="auth-switcher__btn active" type="button" data-auth-mode="signin">
+            Log in
+          </button>
+          <button class="auth-switcher__btn" type="button" data-auth-mode="signup">
+            Create account
+          </button>
+        </div>
+
+        <form id="authForm" class="auth-form">
+          <label id="authNameField" hidden>
+            <span>Full name</span>
+            <input id="authName" type="text" autocomplete="name" />
+          </label>
+          <label>
+            <span>Email address</span>
+            <input id="authEmail" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            <span>Password</span>
+            <input
+              id="authPassword"
+              type="password"
+              autocomplete="current-password"
+              minlength="4"
+              required
+            />
+          </label>
+          <button class="btn btn-primary auth-form__submit" id="authSubmitBtn" type="submit">
+            Log in
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-col">
+          <h4 class="footer-brand">Thrift Boutique</h4>
+          <p>
+            A playful, lightweight storefront demo built with HTML, CSS, and JavaScript. Your cart,
+            account, and orders live in local storage for quick follow-up visits.
+          </p>
+        </div>
+        <div class="footer-col footer-col--links">
+          <h4>Explore</h4>
+          <a href="index.html">Home</a>
+          <a href="products.html">Shop</a>
+          <a href="orders.html">Orders</a>
+          <a href="cart.html">Cart</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; <span id="dateYear"></span> Thrift Boutique. Made with &#9825;.</p>
+      </div>
+    </footer>
+
+    <script src="products.js" defer></script>
+    <script src="scripts.js" defer></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        initSite("profile");
+        document.getElementById("dateYear").textContent = new Date().getFullYear();
+
+        const profileSection = document.getElementById("profileSection");
+        const authModal = document.getElementById("authModal");
+        const authForm = document.getElementById("authForm");
+        const authTitle = document.getElementById("authTitle");
+        const authHelper = document.getElementById("authHelper");
+        const authSubmitBtn = document.getElementById("authSubmitBtn");
+        const authNameField = document.getElementById("authNameField");
+        const authName = document.getElementById("authName");
+        const authEmail = document.getElementById("authEmail");
+        const authPassword = document.getElementById("authPassword");
+        const authModeButtons = document.querySelectorAll("[data-auth-mode]");
+        let authMode = "signin";
+
+        function setAuthMode(mode) {
+          const isSignup = mode === "signup";
+          authMode = mode;
+          authTitle.textContent = isSignup
+            ? "Create an account to save your profile"
+            : "Sign in to open your profile";
+          authHelper.textContent = isSignup
+            ? "Create a quick account for this demo and your orders will stay linked here."
+            : "Use your saved account details to view your profile and order activity.";
+          authSubmitBtn.textContent = isSignup ? "Create account" : "Log in";
+          authNameField.hidden = !isSignup;
+          authName.required = isSignup;
+          authPassword.setAttribute("autocomplete", isSignup ? "new-password" : "current-password");
+
+          authModeButtons.forEach((button) => {
+            button.classList.toggle("active", button.dataset.authMode === mode);
+          });
+        }
+
+        function openAuthModal(mode = "signin") {
+          setAuthMode(mode);
+          authModal.hidden = false;
+          authModal.setAttribute("aria-hidden", "false");
+          document.body.classList.add("modal-open");
+          window.setTimeout(() => {
+            if (mode === "signup") {
+              authName.focus();
+              return;
+            }
+
+            authEmail.focus();
+          }, 20);
+        }
+
+        function closeAuthModal() {
+          authModal.hidden = true;
+          authModal.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("modal-open");
+          authForm.reset();
+          setAuthMode("signin");
+        }
+
+        function renderProfile() {
+          const currentUser = getCurrentUser();
+
+          if (!currentUser) {
+            profileSection.innerHTML = `
+              <div class="cart-empty orders-empty">
+                <h3>Sign in to unlock your profile</h3>
+                <p>
+                  Once you create an account or log back in, you will be able to review your saved
+                  details and linked order activity here.
+                </p>
+                <div class="cart-actions cart-actions--centered">
+                  <button class="btn btn-primary" type="button" id="openSignInBtn">Sign in</button>
+                  <button class="btn btn-secondary" type="button" id="openSignUpBtn">Create account</button>
+                </div>
+              </div>
+            `;
+
+            document.getElementById("openSignInBtn").addEventListener("click", () => {
+              openAuthModal("signin");
+            });
+            document.getElementById("openSignUpBtn").addEventListener("click", () => {
+              openAuthModal("signup");
+            });
+            return;
+          }
+
+          const orders = getOrdersForUser(currentUser.email);
+          const cartCount = getCartCount();
+          const totalSpent = orders.reduce((sum, order) => sum + order.total, 0);
+          const initials = currentUser.name
+            .split(" ")
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0]?.toUpperCase() || "")
+            .join("");
+
+          profileSection.innerHTML = `
+            <div class="orders-toolbar profile-hero">
+              <div class="profile-hero__identity">
+                <div class="profile-avatar" aria-hidden="true">${escapeHTML(initials || "TB")}</div>
+                <div>
+                  <p class="orders-toolbar__eyebrow">Signed in</p>
+                  <h2>${escapeHTML(currentUser.name)}</h2>
+                  <p class="orders-toolbar__meta">${escapeHTML(currentUser.email)}</p>
+                </div>
+              </div>
+              <div class="orders-toolbar__actions">
+                <a href="orders.html" class="btn btn-secondary btn-sm">View orders</a>
+                <button class="btn btn-secondary btn-sm" type="button" id="signOutBtn">Sign out</button>
+              </div>
+            </div>
+
+            <div class="profile-grid">
+              <section class="profile-card">
+                <h3>Account snapshot</h3>
+                <div class="profile-list">
+                  <p><span>Name</span><strong>${escapeHTML(currentUser.name)}</strong></p>
+                  <p><span>Email</span><strong>${escapeHTML(currentUser.email)}</strong></p>
+                  <p><span>Status</span><strong>Active session</strong></p>
+                </div>
+                <div class="profile-actions">
+                  <a href="products.html" class="btn btn-primary btn-sm">Browse shop</a>
+                  <a href="cart.html" class="btn btn-secondary btn-sm">Open cart</a>
+                </div>
+              </section>
+
+              <section class="profile-card">
+                <h3>Your activity</h3>
+                <div class="profile-stat-grid">
+                  <div class="profile-stat">
+                    <span>Orders</span>
+                    <strong>${orders.length}</strong>
+                  </div>
+                  <div class="profile-stat">
+                    <span>Cart items</span>
+                    <strong>${cartCount}</strong>
+                  </div>
+                  <div class="profile-stat">
+                    <span>Total spent</span>
+                    <strong>${formatPrice(totalSpent)}</strong>
+                  </div>
+                </div>
+                <p class="profile-note">
+                  Your profile reflects the demo data currently stored in this browser.
+                </p>
+              </section>
+            </div>
+          `;
+
+          document.getElementById("signOutBtn").addEventListener("click", () => {
+            signOutUser();
+            showToast("You have been signed out", { type: "info" });
+            renderProfile();
+          });
+        }
+
+        authModeButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            setAuthMode(button.dataset.authMode);
+          });
+        });
+
+        authForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+
+          const email = authEmail.value.trim();
+          const password = authPassword.value;
+          const name = authName.value.trim();
+
+          if (!email || !password) {
+            showToast("Please fill in your email and password.", { type: "error" });
+            return;
+          }
+
+          if (authMode === "signup" && !name) {
+            showToast("Please add your name to create an account.", { type: "error" });
+            return;
+          }
+
+          const result =
+            authMode === "signup"
+              ? signUpUser({ name, email, password })
+              : signInUser({ email, password });
+
+          if (!result.ok) {
+            showToast(result.message, { type: "error", duration: 2800 });
+            return;
+          }
+
+          closeAuthModal();
+          renderProfile();
+          showToast(
+            authMode === "signup" ? "Account created successfully" : "Signed in successfully",
+            { type: "success" }
+          );
+        });
+
+        authModal.addEventListener("click", (event) => {
+          if (event.target.hasAttribute("data-close-modal")) {
+            closeAuthModal();
+          }
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !authModal.hidden) {
+            closeAuthModal();
+          }
+        });
+
+        showSkeletonGrid(profileSection, 2);
+        setTimeout(renderProfile, 250);
+      });
+    </script>
+  </body>
+</html>
