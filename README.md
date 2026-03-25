@@ -66,9 +66,7 @@ Recent work in this repo has been split into smaller commits instead of one larg
 
 ## Overview Of The Website
 
-<img src="images/webshot.jpg" alt="Thrift Boutique website screenshot" width="100%" />
-
-<img src="images/Screenshot 2026-03-26 012032.jpg" alt="Thrift Boutique website screenshot" width="100%">
+![Thrift Boutique website screenshot](https://raw.githubusercontent.com/johnkinyadev/thrift_website/main/images/webshot.jpg)
 
 ## Future Improvements
 
