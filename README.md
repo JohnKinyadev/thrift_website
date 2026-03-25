@@ -19,6 +19,10 @@ This project is a frontend-only boutique shopping demo with:
 - JavaScript
 - `localStorage` for cart and demo login session data
 
+## Live Demo
+
+https://johnkinyadev.github.io/thrift_website/
+
 ## Project Structure
 
 - `index.html` - home page
@@ -60,10 +64,13 @@ Recent work in this repo has been split into smaller commits instead of one larg
 - storefront image fallback improvements
 - login-required checkout flow
 
+## Overview Of The Website
+
+![Thrift Boutique website screenshot](images/webshot.jpg)
+
 ## Future Improvements
 
 - connect checkout to a real backend and payment service
 - replace demo authentication with secure server-side auth
 - add product management from an admin dashboard
 - improve mobile navigation and accessibility
-
